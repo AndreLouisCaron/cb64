@@ -6,28 +6,38 @@ cmake_minimum_required(VERSION 2.6)
 
 project(cb64)
 
-  # base paths to source files.
-set(b64_path ${CMAKE_CURRENT_SOURCE_DIR}/code)
-set(demo_path ${CMAKE_CURRENT_SOURCE_DIR}/demo)
+function(add_api_documentation target)
+  if(DOXYGEN_EXECUTABLE)
+    add_custom_target(
+      ${target}
+      COMMAND
+        ${DOXYGEN_EXECUTABLE}
+      WORKING_DIRECTORY
+        ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT
+        "Compiling documentation."
+      VERBATIM
+    )
+  endif()
+endfunction()
 
-  # core library and c++ wrappers.
-file(GLOB b64_headers ${b64_path}/*.h ${b64_path}/*.hpp)
-file(GLOB b64_sources ${b64_path}/*.c ${b64_path}/*.cpp)
-add_library(b64
-  STATIC ${b64_sources} ${b64_headers})
+# Put all libraries and executables in the build folder root.
+set(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
-  # only build demo program(s) if this is a standalone build.
-string(COMPARE EQUAL
-  ${PROJECT_NAME} ${CMAKE_PROJECT_NAME}
-  ${PROJECT_NAME}_is_toplevel)
-if(${${PROJECT_NAME}_is_toplevel})
+add_subdirectory(code)
 
-    # simple demonstration.
-  include_directories(${b64_path})
-  set(demo_sources
-    ${demo_path}/demo.cpp)
-  add_executable(demo ${demo_sources})
-  target_link_libraries(demo b64)
-  add_dependencies(demo b64)
+# Optional targets (skip when building as a dependency).
+if(${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME})
+
+  # Build API documentation.
+  find_package(Doxygen QUIET)
+  configure_file(
+    ${CMAKE_SOURCE_DIR}/help/Doxyfile
+    ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
+  add_api_documentation(doc)
+
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code)
+  add_subdirectory(demo)
 
 endif()
