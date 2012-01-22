@@ -6,7 +6,7 @@
 // "http://www.opensource.org/licenses/mit".
 
 /*!
- * @file b64.h
+ * @file b64.c
  * @author Andre Caron (andre.l.caron@gmail.com)
  * @brief Low-level incremental encoder and decoder for Base64.
  */
@@ -167,7 +167,7 @@ size_t b64_owire_feed ( b64_owire * stream, const char * data, size_t size )
     char buffer[SIZE];
     size_t used = 0;
     size_t pass = 0;
-    while ( size-used >= 4 )
+    while ( size-used >= 3 )
     {
         pass = _b64_encode(stream, buffer,
             data+used, _b64_max(size-used, SIZE), &used);
@@ -200,7 +200,7 @@ size_t b64_owire_done ( b64_owire * stream, const char * data, size_t size )
     {
           /* inflate. */
         code[0] = ((data[0]&0xfc)>>2);
-        code[1] = ((data[0]&0x03)<<4) | ((data[1]&0xf0)>>4);
+        code[1] = ((data[0]&0x03)<<4);
           /* translate codes. */
         buffer[0] = stream->codebook[code[0]];
         buffer[1] = stream->codebook[code[1]];

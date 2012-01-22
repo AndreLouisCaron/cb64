@@ -21,6 +21,8 @@ function(add_api_documentation target)
   endif()
 endfunction()
 
+enable_testing()
+
 # Put all libraries and executables in the build folder root.
 set(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
@@ -39,5 +41,7 @@ if(${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME})
 
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code)
   add_subdirectory(demo)
+
+  add_subdirectory(test)
 
 endif()
