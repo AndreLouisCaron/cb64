@@ -1,9 +1,21 @@
-# cb64 library.
-
-file(GLOB b64_headers *.h *.hpp)
-file(GLOB b64_sources *.c *.cpp)
+# C interface.
+set(headers
+  b64.h
+)
+set(sources
+  b64.c
+)
 add_library(b64
-  STATIC
-  ${b64_sources}
-  ${b64_headers}
+  STATIC ${sources} ${headers}
+)
+
+# C++ interface.
+set(headers
+  b64.hpp
+)
+set(sources
+  b64.cpp
+)
+add_library(b64xx
+  STATIC ${sources} ${headers}
 )

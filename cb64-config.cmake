@@ -11,7 +11,8 @@ if(NOT DEFINED cb64_FOUND)
 
   # Common name for exported library targets.
   set(cb64_libraries
-    b64
+    cb64
+    cb64xx
     CACHE INTERNAL "cb64 library" FORCE
   )
 
